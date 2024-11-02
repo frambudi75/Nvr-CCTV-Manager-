@@ -21,3 +21,8 @@ You can install the required Python packages using the following command:
 
 ```bash
 pip install opencv-python opencv-python-headless
+
+
+
+
+
