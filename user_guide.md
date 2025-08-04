@@ -1,4 +1,3 @@
-
 # User Guide - NVR CCTV
 
 ## Table of Contents
@@ -83,7 +82,7 @@ cd NVR-CCTV
 
 Run the application using the following command:
 ```bash
-python nvr.py
+python nvr_improved.py
 ```
 
 ### Step 2: Application Interface
