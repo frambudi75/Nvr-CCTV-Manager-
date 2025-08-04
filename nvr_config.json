@@ -1,0 +1,16 @@
+{
+    "cctv_list": [
+        {
+            "ip": "10.10.0.5",
+            "username": "admin",
+            "password": "sup3rmaN"
+        }
+    ],
+    "settings": {
+        "duration": 3600,
+        "split_duration": 300,
+        "days_to_keep": 7,
+        "max_retries": 3,
+        "retry_delay": 5
+    }
+}
