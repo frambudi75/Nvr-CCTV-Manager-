@@ -205,5 +205,5 @@ A3: Videos are stored in the `recorded_videos/` folder within the application di
 
 If you encounter any issues or need help with the application, please reach out to the project maintainers:
 
-- **Email**: support@nvrcctv.com
-- **GitHub Issues**: [GitHub Issues](https://github.com/yourusername/NVR-CCTV/issues)
+- **Email**: frambudihabib@gmail.com
+- **GitHub Issues**: [GitHub Issues](https://github.com/frambudi75/Nvr-CCTV-Manager/issues)
