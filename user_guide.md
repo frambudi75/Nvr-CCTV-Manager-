@@ -34,6 +34,16 @@ Before using the system, ensure you meet the following requirements:
 - `opencv-python-headless`
 - `ffmpeg-python`
 
+### Compatible CCTV Brands & Models
+Any IP camera or DVR/NVR that exposes an **RTSP stream** is supported.  
+Popular tested brands include (but are not limited to):
+- **Hikvision** (all models with RTSP enabled)
+- **Dahua** / **Imou** / **Lorex**
+- **Reolink**, **Tapo**, **EZVIZ**, **Amcrest**, **Axis**, **Ubiquiti UniFi Protect**
+- **ONVIF-compliant** cameras from any manufacturer
+
+As long as your camera provides a valid RTSP URL, it will work with this application.
+
 ---
 
 ## Installation
