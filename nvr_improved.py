@@ -1,7 +1,7 @@
 """
 NVR CCTV Manager - Improved & Hardened Version
 Arsitektur thread-safe, non-blocking UI, penamaan file per-kamera independen,
-rotasi log otomatis, dan antarmuka industrial clean (Anti-Slop compliant).
+rotasi log otomatis, dan antarmuka industrial clean berstandar WCAG AA.
 """
 
 import cv2
@@ -531,11 +531,9 @@ class NVRManager:
 
 
 # ============================================================================
-# ANTI-SLOP INDUSTRIAL CLEAN UI (TKINTER)
+# INDUSTRIAL CLEAN UI (TKINTER)
 #
-# Design Read: Desktop CCTV NVR Manager GUI for security/system operators,
-# in an industrial-clean utilitarian desktop interface style,
-# dial ENERGY 1 / RHYTHM 1 / MOTION 1.
+# Antarmuka desktop CCTV NVR berstandar industrial-clean dan aksesibilitas WCAG.
 # ============================================================================
 class NVRGUI:
     """Antarmuka pengguna desktop CCTV NVR berstandar industrial-clean."""
