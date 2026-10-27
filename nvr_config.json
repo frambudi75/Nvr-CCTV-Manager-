@@ -11,6 +11,7 @@
         "split_duration": 300,
         "days_to_keep": 7,
         "max_retries": 3,
-        "retry_delay": 5
+        "retry_delay": 5,
+        "fps_target": 20
     }
 }

@@ -1,0 +1,6 @@
+__pycache__/
+*.py[cod]
+*$py.class
+storage/
+nvr_log.txt
+test_config.json
