@@ -1,123 +1,138 @@
-# NVR CCTV Manager - Versi Bahasa Indonesia
+# NVR CCTV Manager
 
-## 📋 **Ringkasan Proyek**
-NVR CCTV Manager adalah sistem perekaman video jaringan berbasis Python untuk kamera CCTV. Sistem ini mendukung pemantauan langsung dan perekaman dari kamera CCTV melalui protokol RTSP dengan penanganan koneksi otomatis dan manajemen file yang cerdas.
+Aplikasi desktop berbasis Python dan OpenCV untuk mengelola, memantau, dan merekam stream video kamera CCTV melalui protokol RTSP (Real-Time Streaming Protocol).
 
-## 🆕 **Update Terbaru - nvr_improved.py**
-**Versi terbaru dengan perbaikan bug kritis dan peningkatan performa!**
+Aplikasi ini dirancang untuk operasional stabil multi-kamera, dengan pemrosesan rekaman di latar belakang (background thread) agar antarmuka tidak membeku (freeze), pemisahan berkas video mandiri per kamera, dan pembersihan otomatis berkas rekaman lama.
 
-### ✅ **Perbaikan Utama dari Versi Lama:**
-- **Koneksi RTSP yang Stabil** - Dengan retry otomatis hingga 3 kali
-- **Memory Management** - Tidak ada lagi memory leak
-- **Thread Safety** - Operasi multi-thread yang aman
-- **File Video yang Sehat** - Tidak ada lagi file rusak
-- **Error Handling** - Penanganan error yang komprehensif
+---
 
-## 🚀 **Fitur Lengkap**
+## Fitur Utama
 
-### **Fitur Baru di nvr_improved.py:**
-- ✅ **Koneksi Otomatis** dengan retry logic
-- ✅ **Pembersihan File Lama** otomatis berdasarkan hari
-- ✅ **Validasi Input** untuk IP address dan pengaturan
-- ✅ **Monitoring Status** real-time
-- ✅ **Logging dengan Rotasi** otomatis
-- ✅ **Split File Otomatis** untuk mencegah file terlalu besar
-- ✅ **Resource Management** yang baik
+- **Perekaman RTSP Multi-Kamera**: Mendukung pemantauan dan perekaman beberapa kamera CCTV secara simultan melalui transport TCP yang stabil.
+- **Isolasi Berkas Rekaman**: Setiap kamera menyimpan video ke berkas terpisah dengan penamaan berbasis IP dan timestamp (`rec_{ip}_{timestamp}.mp4`), mencegah konflik penimpaan data antar kamera.
+- **Perekaman Asinkron & Antarmuka Responsif**: Koneksi dan pembacaan stream dijalankan pada thread terpisah. Jendela aplikasi tetap responsif meskipun kamera sedang offline atau mengalami gangguan jaringan.
+- **Pembagian Berkas Berkala (Split Recording)**: Membagi rekaman video ke berkas baru secara periodik (misal setiap 5 menit) tanpa kehilangan frame dan tanpa kebocoran memori.
+- **Pembersihan Rekaman Otomatis**: Menghapus folder rekaman lama secara berkala berdasarkan rentang hari (retensi) yang ditentukan pengguna.
+- **Finalisasi Berkas Aman (Graceful Shutdown)**: Saat aplikasi ditutup, seluruh encoder video ditutup secara berurutan untuk memastikan berkas MP4 tidak korup.
+- **Antarmuka Desktop Industrial Clean**: Desain bertema kontras tinggi yang memenuhi standar aksesibilitas WCAG AA, dilengkapi tabel status CCTV, tombol uji koneksi cepat, dan konsol catatan aktivitas real-time.
+- **Tersedia Versi Executable (.exe)**: Dapat langsung dijalankan di Windows tanpa perlu menginstal Python atau pustaka tambahan.
 
-### **Fitur Asli yang Dipertahankan:**
-- 📹 **Live streaming** dari CCTV
-- 🎥 **Perekaman video** otomatis
-- 🖥️ **GUI berbasis Tkinter** yang user-friendly
-- ⚙️ **Manajemen CCTV** (tambah, lihat, hapus)
-- 🗂️ **Penyimpanan terorganisir** per tanggal
-- 🧹 **Pembersihan otomatis** file lama
+---
 
-## 📦 **Persyaratan Sistem**
+## Persyaratan Sistem
 
-### **Software Requirements:**
-- Python 3.7 atau lebih baru
-- OpenCV (`opencv-python` dan `opencv-python-headless`)
-- Tkinter (sudah termasuk di Python)
-- FFmpeg untuk decoding H.264
+### Menjalankan Berkas Executable (.exe)
+- **Sistem Operasi**: Windows 10 atau Windows 11 (64-bit)
+- Tidak memerlukan instalasi Python tambahan.
 
-### **Instalasi Dependencies:**
+### Menjalankan dari Kode Sumber (Python)
+- **Python**: Versi 3.8 hingga 3.12 (64-bit)
+- **Pustaka Python**:
+  - `opencv-python` (versi 4.x atau 5.x)
+  - `numpy`
+  - `tkinter` (bawaan instalasi standar Python)
+
+Instalasi pustaka yang diperlukan:
 ```bash
-# Install semua dependencies
-pip install opencv-python opencv-python-headless
+pip install opencv-python numpy
 ```
 
-## 🛠️ **Cara Instalasi dan Penggunaan**
+---
 
-### **Langkah 1: Jalankan Program**
+## Panduan Penggunaan
+
+### 1. Menjalankan Versi Executable
+Buka folder `dist/` dan jalankan:
+```text
+dist/NVR-CCTV-Manager.exe
+```
+
+### 2. Menjalankan dari Kode Sumber
+Buka terminal di direktori proyek dan jalankan:
 ```bash
-# Gunakan versi yang sudah diperbaiki
 python nvr_improved.py
 ```
 
-### **2. Menambahkan CCTV Baru**
-1. Klik tombol **"➕ Tambah CCTV"**
-2. Masukkan **IP Address** CCTV (contoh: 192.168.1.100)
-3. Masukkan **Username** untuk login CCTV
-4. Masukkan **Password** untuk login CCTV
-5. Klik OK untuk menyimpan
+### 3. Menambahkan Kamera CCTV
+1. Klik tombol **+ Tambah CCTV**.
+2. Masukkan parameter kamera:
+   - **Alamat IP**: Alamat IPv4 kamera (contoh: `192.168.1.100`).
+   - **Username**: Nama pengguna untuk otentikasi RTSP (contoh: `admin`).
+   - **Password**: Kata sandi kamera.
+3. Tekan **Enter** atau klik **Simpan CCTV**.
 
-### **3. Pengaturan Rekaman**
-- **Durasi Total Perekaman**: Total waktu perekaman dalam detik (default: 3600 = 1 jam)
-- **Durasi File Rekaman**: Durasi per file video sebelum di-split (default: 300 = 5 menit)
-- **Simpan Selama**: Berapa hari file akan disimpan (default: 7 hari)
+### 4. Menguji Koneksi Kamera
+1. Pilih baris kamera pada tabel.
+2. Klik tombol **Uji Koneksi Kamera**.
+3. Aplikasi akan mencoba membuka stream RTSP di latar belakang dan melaporkan hasilnya melalui dialog dan konsol log.
 
-### **4. Kontrol Rekaman**
-- **▶️ Mulai Rekaman**: Mulai merekam semua CCTV yang terdaftar
-- **⏹️ Hentikan**: Berhenti merekam semua CCTV
-- **🧹 Bersihkan Lama**: Hapus file rekaman lama secara manual
+### 5. Mengatur Parameter Perekaman
+- **Durasi Total (detik)**: Batas waktu total perekaman. Isi `0` jika ingin merekam terus-menerus hingga dihentikan secara manual.
+- **Durasi File / Split (detik)**: Panjang durasi tiap berkas rekaman sebelum dibagi ke berkas baru (default: `300` detik = 5 menit).
+- **Masa Simpan (hari)**: Jumlah hari penyimpanan rekaman. Berkas yang lebih tua dari batas ini akan dihapus saat pembersihan dijalankan (default: `7` hari).
+- Klik **Simpan Parameter** untuk menyimpan perubahan ke berkas konfigurasi `nvr_config.json`.
 
-## 📁 **Struktur File**
+### 6. Memulai dan Menghentikan Rekaman
+- Klik tombol hijau **Mulai Perekaman** untuk memulai perekaman seluruh CCTV yang terdaftar.
+- Klik tombol merah **Hentikan Perekaman** untuk mengakhiri perekaman dan memfinalisasi semua berkas video.
 
+---
+
+## Format Penyimpanan Berkas
+
+Rekaman disimpan secara otomatis pada folder `storage/` yang dikelompokkan berdasarkan tanggal:
+
+```text
+storage/
+└── 2026-10-27/
+    ├── rec_192_168_1_100_20261027_080000.mp4
+    ├── rec_192_168_1_100_20261027_080500.mp4
+    └── rec_192_168_1_101_20261027_080000.mp4
 ```
-NVR-CCTV-Manager/
-├── nvr_improved.py      # Program utama (versi yang diperbaiki)
-├── nvr.py               # Program lama (untuk referensi)
-├── nvr_config.json      # File konfigurasi (auto-generated)
-├── nvr_log.txt          # Log aktivitas (auto-generated)
-├── storage/             # Folder penyimpanan video
-│   ├── 2024-01-15/
-│   │   ├── recording_143000.mp4
-│   │   └── recording_143500.mp4
-│   └── 2024-01-16/
-└── README.md            # File ini
+
+Setiap nama berkas menyertakan IP kamera dan tanggal-waktu mulai rekaman, sehingga data dari kamera yang berbeda tidak akan saling menimpa.
+
+---
+
+## Cara Membuat Berkas Executable Sendiri
+
+Untuk mengompilasi ulang kode sumber menjadi berkas `.exe` mandiri menggunakan PyInstaller:
+
+1. Pasang PyInstaller:
+   ```bash
+   pip install pyinstaller
+   ```
+2. Jalankan perintah kompilasi:
+   ```bash
+   python -m PyInstaller --noconfirm --clean --onefile --windowed --name "NVR-CCTV-Manager" nvr_improved.py
+   ```
+3. Berkas executable yang dihasilkan akan tersedia di folder `dist/NVR-CCTV-Manager.exe`.
+
+---
+
+## Struktur Berkas Proyek
+
+```text
+Nvr-CCTV-Manager-/
+├── nvr_improved.py        # Program utama dengan perbaikan thread safety dan arsitektur asinkron
+├── nvr.py                 # Versi skrip awal (referensi historis)
+├── nvr_config.json        # Berkas konfigurasi CCTV dan parameter perekaman
+├── dist/
+│   └── NVR-CCTV-Manager.exe # Berkas aplikasi mandiri siap pakai untuk Windows
+├── storage/               # Direktori penyimpanan rekaman video (dikelompokkan per tanggal)
+├── README.md              # Dokumentasi teknis proyek
+└── user_guide.md          # Panduan lengkap operasional dan pemecahan masalah
 ```
 
-## 🎯 **Panduan Penggunaan (Bahasa Indonesia)**
+---
 
-### **1. Menambahkan CCTV Baru**
-1. Jalankan program: `python nvr_improved.py`
-2. Klik tombol **"➕ Tambah CCTV"**
-3. Masukkan IP Address CCTV (contoh: 192.168.1.100)
-4. Masukkan Username dan Password
-5. Klik OK untuk menyimpan
+## Pemecahan Masalah (Troubleshooting)
 
-### **2. Melihat Daftar CCTV**
-- Klik **"📋 Lihat Daftar"** untuk melihat semua CCTV yang terdaftar
-- Informasi yang ditampilkan: nomor urut, IP address, dan username
-
-### **3. Menghapus CCTV**
-- Klik **"🗑️ Hapus CCTV"** dan pilih dari daftar
-- Konfirmasi penghapusan untuk menghapus CCTV
-
-### **4. Pengaturan Rekaman**
-- **Durasi Total**: Total waktu perekaman dalam detik
-- **Durasi File**: Durasi per file video sebelum di-split
-- **Simpan Selama**: Berapa hari file akan disimpan
-
-## 🔧 **Troubleshooting**
-
-### **Masalah Umum dan Solusi:**
-- **Koneksi CCTV Gagal**: Pastikan IP address benar dan kamera terjangkau
-- **File Video Rusak**: Codec otomatis menggunakan mp4v/avc1 yang stabil
-- **Memory Leak**: Sudah diperbaiki dengan resource management otomatis
-
-## 📞 **Dukungan**
-Untuk pertanyaan atau laporan bug, silakan buat issue di repository ini.
-
-## 📄 **Lisensi**
-Proyek ini open-source dan tersedia untuk digunakan secara gratis.
+- **Kamera Berstatus "Koneksi Gagal" atau "Sinyal Hilang"**:
+  - Pastikan komputer dan kamera berada di subnet jaringan yang sama.
+  - Periksa apakah port `554` pada kamera terbuka dan tidak diblokir oleh firewall router.
+  - Pastikan username dan password RTSP sudah sesuai dengan konfigurasi kamera.
+- **Port RTSP Berbeda**:
+  - Secara default, aplikasi menggunakan port standar `554` dengan channel path `/Streaming/Channels/101` (kompatibel dengan Hikvision, Dahua, ONVIF, dan merek sejenis).
+- **Video Rusak Saat Komputer Mati Mendadak**:
+  - Format container yang digunakan adalah MP4 dengan encoder `mp4v`. Gunakan pemutar media seperti VLC Media Player untuk kompatibilitas codec optimal.

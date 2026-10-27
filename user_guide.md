@@ -1,209 +1,178 @@
-# User Guide - NVR CCTV
+# Panduan Pengguna - NVR CCTV Manager
 
-## Table of Contents
-1. [Introduction](#introduction)
-2. [System Requirements](#system-requirements)
-3. [Installation](#installation)
-4. [Running the Application](#running-the-application)
-5. [Using the Application](#using-the-application)
-6. [Recording and Storage](#recording-and-storage)
-7. [Handling Connection Issues](#handling-connection-issues)
-8. [Troubleshooting](#troubleshooting)
-9. [FAQ](#faq)
-10. [Contact and Support](#contact-and-support)
+Dokumen ini berisi panduan lengkap untuk instalasi, konfigurasi, operasional, dan pemecahan masalah aplikasi NVR CCTV Manager.
 
 ---
 
-## Introduction
-
-The **NVR CCTV** system allows users to monitor and record CCTV camera streams via RTSP. With a graphical user interface (GUI), the system provides an easy way to add multiple devices, view live streams, and manage recorded video files.
-
----
-
-## System Requirements
-
-Before using the system, ensure you meet the following requirements:
-
-- **Operating System**: Windows, Linux, or MacOS
-- **Python**: Version 3.7 or higher
-- **FFmpeg**: For video processing and encoding
-- **CCTV Camera**: With RTSP streaming capabilities
-
-### Required Python Libraries:
-- `opencv-python`
-- `opencv-python-headless`
-- `ffmpeg-python`
-
-### Compatible CCTV Brands & Models
-Any IP camera or DVR/NVR that exposes an **RTSP stream** is supported.  
-Popular tested brands include (but are not limited to):
-- **Hikvision** (all models with RTSP enabled)
-- **Dahua** / **Imou** / **Lorex**
-- **Reolink**, **Tapo**, **EZVIZ**, **Amcrest**, **Axis**, **Ubiquiti UniFi Protect**
-- **ONVIF-compliant** cameras from any manufacturer
-
-As long as your camera provides a valid RTSP URL, it will work with this application.
+## Daftar Isi
+1. [Pengenalan Sistem](#pengenalan-sistem)
+2. [Persyaratan Perangkat & Jaringan](#persyaratan-perangkat--jaringan)
+3. [Cara Menjalankan Aplikasi](#cara-menjalankan-aplikasi)
+4. [Tata Cara Penggunaan Antarmuka](#tata-cara-penggunaan-antarmuka)
+5. [Manajemen Rekaman & Penyimpanan](#manajemen-rekaman--penyimpanan)
+6. [Kompilasi Berkas Executable](#kompilasi-berkas-executable)
+7. [Panduan Pemecahan Masalah](#panduan-pemecahan-masalah)
+8. [Pertanyaan yang Sering Diajukan (FAQ)](#pertanyaan-yang-sering-diajukan-faq)
 
 ---
 
-## Installation
+## Pengenalan Sistem
 
-### Step 1: Install Python
+NVR CCTV Manager adalah perangkat lunak perekam video jaringan (Network Video Recorder) berbasis komputer desktop. Aplikasi ini menghubungkan komputer Anda ke kamera CCTV IP melalui protokol RTSP (Real-Time Streaming Protocol) dan menyimpan rekaman ke dalam format video MP4 terkompresi.
 
-Ensure that you have **Python 3.7+** installed on your system. You can download it from the [official Python website](https://www.python.org/downloads/).
+Fitur keamanan dan stabilitas utama:
+- Setiap kamera merekam ke dalam berkas independen dengan identitas IP pada nama berkas.
+- Proses inisialisasi jaringan dan perekaman berjalan di latar belakang (asinkron), menjaga antarmuka tetap lancar tanpa gangguan "Not Responding".
+- Perekaman jangka panjang dibagi secara otomatis ke dalam interval berkas (split recording) untuk memudahkan pencarian arsip dan mencegah ukuran berkas terlalu besar.
+- Fitur pembersihan otomatis menghapus berkas rekaman lama berdasarkan tanggal kalender.
 
-### Step 2: Install Dependencies
+---
 
-Open a terminal or command prompt and install the necessary Python libraries:
-```bash
-pip install opencv-python opencv-python-headless
+## Persyaratan Perangkat & Jaringan
+
+### Kebutuhan Perangkat Keras
+- **Prosesor**: Intel Core i3 / AMD Ryzen 3 atau setara (disarankan quad-core untuk lebih dari 4 kamera).
+- **RAM**: Minimal 4 GB (disarankan 8 GB jika merekam banyak kamera beresolusi tinggi).
+- **Ruang Penyimpanan**: Hard disk atau SSD dengan kapasitas memadai untuk menyimpan berkas video.
+
+### Kebutuhan Jaringan
+- Komputer dan kamera CCTV harus berada dalam satu jaringan lokal (LAN) atau terhubung melalui routing/VPN yang dapat saling menjangkau.
+- Port RTSP standar `554` harus terbuka dan dapat diakses dari komputer perekam.
+- Kamera CCTV mendukung streaming RTSP H.264/MPEG-4 (seperti Hikvision, Dahua, EZVIZ, Tapo, Reolink, IMOU, dan kamera bersertifikasi ONVIF).
+
+---
+
+## Cara Menjalankan Aplikasi
+
+### Metode 1: Menggunakan Berkas Executable (.exe)
+Jika Anda menggunakan Windows dan tidak memiliki Python terpasang:
+1. Masuk ke folder `dist/`.
+2. Klik ganda berkas `NVR-CCTV-Manager.exe`.
+3. Aplikasi akan langsung terbuka tanpa perlu konfigurasi pustaka tambahan.
+
+### Metode 2: Menggunakan Python dari Kode Sumber
+Jika Anda ingin menjalankan aplikasi dari kode sumber:
+1. Pastikan Python 3.8 atau yang lebih baru telah terpasang di komputer.
+2. Buka terminal atau Command Prompt pada folder proyek.
+3. Pasang pustaka OpenCV dan NumPy:
+   ```bash
+   pip install opencv-python numpy
+   ```
+4. Jalankan aplikasi:
+   ```bash
+   python nvr_improved.py
+   ```
+
+---
+
+## Tata Cara Penggunaan Antarmuka
+
+Antarmuka NVR CCTV Manager terdiri dari empat bagian fungsional:
+
+### 1. Panel Daftar Kamera CCTV
+Menampilkan daftar seluruh kamera CCTV yang tersimpan dalam sistem beserta status operasionalnya.
+
+- **Menambahkan CCTV Baru**:
+  1. Klik tombol **+ Tambah CCTV** di atas tabel.
+  2. Masukkan alamat IP kamera (contoh: `192.168.1.100`).
+  3. Masukkan username dan password RTSP kamera.
+  4. Klik **Simpan CCTV** atau tekan tombol **Enter**.
+- **Menghapus CCTV**:
+  1. Pilih salah satu baris kamera pada tabel.
+  2. Klik tombol **Hapus Terpilih**.
+  3. Konfirmasi dialog penghapusan.
+- **Menguji Koneksi Kamera**:
+  1. Pilih baris kamera pada tabel.
+  2. Klik tombol **Uji Koneksi Kamera**.
+  3. Sistem akan menguji apakah stream RTSP kamera dapat diakses secara langsung tanpa memulai rekaman.
+
+### 2. Panel Pengaturan Perekaman
+Digunakan untuk mengatur parameter teknis penyimpanan video:
+- **Durasi Total (detik)**: Mengatur lama perekaman berjalan. Jika diisi `0`, perekaman akan berlangsung terus-menerus hingga Anda menekan tombol hentikan secara manual.
+- **Durasi File / Split (detik)**: Mengatur durasi pemecahan berkas rekaman. Nilai default adalah `300` detik (5 menit per berkas video).
+- **Masa Simpan (hari)**: Mengatur batas retensi penyimpanan. Berkas video yang berumur lebih tua dari jumlah hari ini akan dihapus saat pembersihan dijalankan.
+- Klik tombol **Simpan Parameter** untuk menyimpan pengaturan ke berkas `nvr_config.json`.
+
+### 3. Panel Kontrol Operasi
+- **Mulai Perekaman**: Menghubungkan seluruh kamera yang terdaftar dan mulai menulis data video ke disk. Tombol ini otomatis dinonaktifkan saat perekaman aktif.
+- **Hentikan Perekaman**: Mengirim sinyal penghentian ke seluruh proses perekaman, menutup berkas MP4 dengan aman, dan merilis sumber daya stream.
+- **Bersihkan Rekaman Lama**: Menghapus direktori rekaman yang tanggalnya telah melampaui masa simpan.
+
+### 4. Panel Catatan Aktivitas Sistem
+Menampilkan riwayat kejadian secara kronologis (timestamp, status koneksi, pembuatan berkas baru, peringatan jaringan, dan pesan error).
+
+---
+
+## Manajemen Rekaman & Penyimpanan
+
+### Lokasi dan Struktur Direktori
+Semua berkas rekaman disimpan di dalam folder `storage/` pada direktori kerja aplikasi. Struktur folder menggunakan format tanggal kalender:
+
+```text
+storage/
+├── 2026-10-26/
+│   ├── rec_192_168_1_50_20261026_090000.mp4
+│   └── rec_192_168_1_50_20261026_090500.mp4
+└── 2026-10-27/
+    ├── rec_192_168_1_50_20261027_080000.mp4
+    └── rec_192_168_1_51_20261027_080000.mp4
 ```
 
-### Step 3: Install FFmpeg
-
-For **Windows**:
-1. Download **FFmpeg** from the [official website](https://ffmpeg.org/download.html).
-2. Extract the files and add the `bin` folder to your system's PATH.
-
-For **Linux** (Ubuntu/Debian):
-```bash
-sudo apt update
-sudo apt install ffmpeg
+### Format Penamaan Berkas
+Setiap berkas diberi nama dengan pola:
+```text
+rec_{IP_KAMERA}_{TAHUNBULANTANGGAL}_{JAMMENITDETIK}.mp4
 ```
-
-For **MacOS**:
-```bash
-brew install ffmpeg
-```
-
-### Step 4: Clone the Project
-
-Clone the repository to your local system:
-```bash
-git clone https://github.com/yourusername/NVR-CCTV.git
-cd NVR-CCTV
-```
+Contoh: `rec_192_168_1_100_20261027_143000.mp4`. Penamaan ini menjamin tidak ada dua kamera yang menulis ke berkas yang sama meskipun waktu perekaman bertepatan.
 
 ---
 
-## Running the Application
+## Kompilasi Berkas Executable
 
-### Step 1: Start the Application
+Jika Anda memodifikasi kode program dan ingin membuat berkas `.exe` baru:
 
-Run the application using the following command:
-```bash
-python nvr_improved.py
-```
-
-### Step 2: Application Interface
-
-When the application starts, a graphical user interface (GUI) will appear, allowing you to manage your CCTV devices.
-
----
-
-## Using the Application
-
-### Adding a CCTV Camera
-
-1. In the application window, click **Add Device**.
-2. Enter the following details:
-   - **RTSP URL**: The RTSP stream URL for your CCTV camera.
-   - **Username** and **Password** (if required for access).
-3. Click **Add**. The live feed from the camera should appear.
-
-### Viewing CCTV Devices
-
-You can view the list of added devices by clicking **View Devices**. This shows all the connected CCTV cameras.
-
-### Recording Video
-
-To start recording:
-1. Select the camera you want to record from.
-2. Click **Start Recording**. The video will be saved in the `recorded_videos/` folder in AVI format.
-   
-To stop recording:
-1. Click **Stop Recording**.
-
-### Removing a Device
-
-1. To remove a camera, select it from the device list.
-2. Click **Remove Device**. The device will be removed from the monitoring list.
+1. Pasang PyInstaller:
+   ```bash
+   pip install pyinstaller
+   ```
+2. Jalankan perintah kompilasi:
+   ```bash
+   python -m PyInstaller --noconfirm --clean --onefile --windowed --name "NVR-CCTV-Manager" nvr_improved.py
+   ```
+3. Berkas executable siap didistribusikan akan berada pada folder `dist/NVR-CCTV-Manager.exe`.
 
 ---
 
-## Recording and Storage
+## Panduan Pemecahan Masalah
 
-- Recorded videos are stored in the `recorded_videos/` directory in the application's folder.
-- You can configure the **recording duration** and set up an **automatic deletion cycle** for managing storage space.
-  
-### Managing Storage
+### 1. Status Kamera Menampilkan "Koneksi Gagal"
+- Periksa kesesuaian segmen IP antara komputer dan kamera. Misalnya, jika IP komputer adalah `10.11.12.124`, komputer tidak dapat mengakses kamera di IP `10.10.0.5` secara langsung tanpa adanya gateway atau rute antar-subnet.
+- Uji koneksi fisik menggunakan perintah ping di terminal:
+  ```bash
+  ping <IP_CCTV>
+  ```
+- Periksa apakah username atau password RTSP memiliki karakter khusus yang memerlukan verifikasi ulang.
 
-To prevent storage from filling up, you can set up automatic file deletion based on a certain timeframe (e.g., delete files older than 7 days).
+### 2. Berkas Rekaman Tidak Dapat Diputar di Pemutar Bawaan Windows
+- Aplikasi menggunakan codec standar `mp4v`. Beberapa versi pemutar media bawaan Windows memerlukan paket codec tambahan.
+- Disarankan menggunakan pemutar media VLC Media Player atau MPC-HC untuk hasil pemutaran yang optimal.
 
----
+### 3. Log Menampilkan "Sinyal Hilang" saat Perekaman
+- Kondisi ini menandakan transmisi paket video dari kamera ke komputer terputus sementara.
+- Sistem secara otomatis akan mencoba membaca kembali stream setiap detik hingga transmisi pulih tanpa menghentikan aplikasi.
 
-## Handling Connection Issues
-
-The system is designed to handle common issues such as disconnections or decoding errors:
-
-1. **Automatic Reconnection**: If the connection to a CCTV camera is lost, the system will automatically try to reconnect.
-2. **Error Notification**: If a connection or stream error occurs, you will see a notification in the console (e.g., `[rtsp @ ...] error while decoding`).
-
-### Manual Reconnection
-
-If a camera doesn't reconnect automatically, you can try to manually reconnect by removing and re-adding the device.
-
----
-
-## Troubleshooting
-
-Here are some common issues you may encounter and how to resolve them:
-
-### 1. FFmpeg Not Found
-If you receive an error indicating that FFmpeg is not installed, ensure that it is correctly added to your system's PATH. Refer to the [Installation](#installation) section for details.
-
-### 2. Decoding Errors
-You may see errors like `[h264 @ ...] error while decoding`. This usually happens if the network connection is unstable. The application will attempt to reconnect automatically.
-
-### 3. No Video or Black Screen
-If the live feed does not show the video:
-- Ensure the RTSP URL is correct.
-- Check network connectivity between the application and the CCTV camera.
-- Verify that the camera is online and streaming correctly.
-
-### 4. Video File Not Saved
-If recording does not generate a video file:
-- Ensure that you have write permissions to the `recorded_videos/` directory.
-- Check the application's console output for any errors related to file saving.
+### 4. Perekaman Berhenti Sendiri
+- Periksa nilai **Durasi Total** pada pengaturan. Jika nilai durasi diisi selain `0` (misalnya 3600), perekaman akan berhenti otomatis setelah durasi tersebut tercapai. Ubah ke `0` untuk perekaman tanpa batas.
 
 ---
 
-## FAQ
+## Pertanyaan yang Sering Diajukan (FAQ)
 
-**Q1: What is the recommended RTSP URL format?**
+**Q: Apakah aplikasi ini membutuhkan koneksi internet untuk merekam?**  
+A: Tidak. Aplikasi bekerja sepenuhnya pada jaringan lokal (LAN). Selama komputer dan kamera terhubung pada switch atau router lokal, perekaman tetap berjalan normal tanpa internet.
 
-A1: RTSP URLs vary by camera model, but a common format is:
-```
-rtsp://<username>:<password>@<camera-ip>:<port>/<stream>
-```
-For example:
-```
-rtsp://admin:password@192.168.1.100:554/stream
-```
+**Q: Berapa jumlah maksimal kamera yang dapat ditambahkan?**  
+A: Tidak ada batasan bawaan pada perangkat lunak. Jumlah kamera yang dapat direkam secara stabil bergantung pada kapasitas CPU, kecepatan kartu jaringan (NIC), dan kecepatan baca-tulis media penyimpanan komputer Anda.
 
-**Q2: How do I add multiple cameras?**
-
-A2: You can add multiple cameras by clicking the **Add Device** button multiple times and entering each camera's details.
-
-**Q3: Where are my recorded videos stored?**
-
-A3: Videos are stored in the `recorded_videos/` folder within the application directory.
-
----
-
-## Contact and Support
-
-If you encounter any issues or need help with the application, please reach out to the project maintainers:
-
-- **Email**: frambudihabib@gmail.com
-- **GitHub Issues**: [GitHub Issues](https://github.com/frambudi75/Nvr-CCTV-Manager/issues)
+**Q: Apa yang terjadi jika komputer mati mendadak saat merekam?**  
+A: Berkas video yang sedang aktif ditulis mungkin terputus pada detik terakhir, namun berkas-berkas interval sebelumnya yang telah di-split tetap utuh dan tersimpan secara aman di direktori `storage/`.
